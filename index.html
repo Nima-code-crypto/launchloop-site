@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>CodeArc – MVP, webbutveckling & systemlösningar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CodeArc hjälper dig från idé till fungerande MVP, webbplats eller systemlösning med fokus på snabb leverans, tydlig kommunikation och långsiktigt samarbete." />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.15);
+      --accent-strong: rgba(79, 70, 229, 0.35);
+      --text: #f9fafb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2933;
+      --error: #f97373;
+      --success: #22c55e;
+      --radius-lg: 18px;
+      --radius-full: 999px;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.45);
+      --shadow-subtle: 0 10px 30px rgba(0,0,0,0.25);
+      --transition-fast: 0.18s ease-out;
+      --max-width: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 40%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* NAVBAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(to bottom,
+                 rgba(2,6,23,0.95),
+                 rgba(2,6,23,0.88),
+                 rgba(2,6,23,0.75));
+      border-bottom: 1px solid rgba(148,163,184,0.1);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 11px;
+      background: conic-gradient(from 160deg, #4f46e5, #22c55e, #ec4899, #4f46e5);
+      position: relative;
+      box-shadow: 0 0 24px rgba(79,70,229,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 20% 0, #111827, #020617);
+    }
+
+    .logo-text {
+      position: relative;
+      z-index: 1;
+      font-size: 0.95rem;
+    }
+
+    .logo-text span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      position: relative;
+      transition: color var(--transition-fast), transform 0.12s ease-out;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.25rem;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #4f46e5, #22c55e);
+      border-radius: 999px;
+      transition: width 0.2s ease-out;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      padding: 0.45rem 1.1rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #4f46e5, #22c55e);
+      font-size: 0.88rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(79,70,229,0.55);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+                  filter var(--transition-fast);
+    }
+
+    .nav-cta span {
+      font-size: 1rem;
+      transform: translateY(1px);
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.06);
+      box-shadow: 0 16px 35px rgba(79,70,229,0.7);
+    }
+
+    .nav-cta:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: 0 8px 22px rgba(15,23,42,0.9);
+    }
+
+    .mobile-toggle {
+      display: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0.2rem;
+    }
+
+    .mobile-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      margin: 4px 0;
+      transition: transform var(--transition-fast),
+                  opacity var(--transition-fast),
+                  background var(--transition-fast);
+    }
+
+    .mobile-open .bar1 {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-open .bar2 {
+      opacity: 0;
+    }
+
+    .mobile-open .bar3 {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+      display: none;
+      padding: 0.8rem 0 1.4rem;
+      border-top: 1px solid rgba(148,163,184,0.15);
+    }
+
+    .mobile-menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .mobile-menu a {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+    }
+
+    .mobile-menu a:hover {
+      color: var(--text);
+    }
+
+    .mobile-menu .nav-cta {
+      margin-top: 0.8rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* HERO */
+    main {
+      flex: 1;
+    }
+
+    .hero {
+      padding: 4rem 0 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.25), transparent 55%),
+                  rgba(15,23,42,0.8);
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+    }
+
+    .hero-kicker span {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.7);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 3vw + 1.4rem, 3.25rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      letter-spacing: -0.04em;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(120deg, #a855f7, #4f46e5, #22c55e);
+       background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 0.98rem;
+      color: var(--text-soft);
+      max-width: 32rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 1.4rem;
+    }
+
+    .btn-primary {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4f46e5, #22c55e);
+      box-shadow: var(--shadow-soft);
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  filter var(--transition-fast);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.07);
+      box-shadow: 0 22px 45px rgba(15,23,42,0.9);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.95);
+    }
+
+    .btn-secondary {
+      padding: 0.7rem 1.3rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-soft);
+      box-shadow: var(--shadow-subtle);
+      transition: background var(--transition-fast),
+                  border-color var(--transition-fast),
+                  color var(--transition-fast),
+                  transform var(--transition-fast),
+                  box-shadow var(--transition-fast);
+    }
+
+    .btn-secondary:hover {
+      background: #020617;
+      border-color: #4f46e5;
+      color: #e5e7eb;
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.95);
+    }
+
+    .hero-meta {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .hero-meta strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 28px;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 55%),
+                  radial-gradient(circle at 100% 0, rgba(244,63,94,0.18), transparent 55%),
+                  #020617;
+      padding: 1.5rem 1.5rem 1.4rem;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+      border: 1px solid rgba(148,163,184,0.32);
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .badge-pill {
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .badge-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .hero-card-title {
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-card-sub {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .stat-box {
+      background: rgba(15,23,42,0.9);
+      border-radius: 16px;
+      padding: 0.55rem 0.6rem;
+      border: 1px solid rgba(31,41,55,0.9);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 0.1rem;
+    }
+
+    .stat-value span {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+
+    .hero-timeline {
+      margin-top: 0.5rem;
+      border-radius: 18px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(31,41,55,0.9);
+      padding: 0.8rem 0.9rem;
+      font-size: 0.78rem;
+    }
+
+    .hero-timeline-row {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .hero-timeline-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-pill {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .hero-timeline-label {
+      color: #e5e7eb;
+    }
+
+    .hero-timeline-text {
+      color: var(--text-soft);
+    }
+
+    .hero-card-footer {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .hero-card-footer span.strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-card-footer .pill {
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: rgba(22,163,74,0.13);
+      border: 1px solid rgba(34,197,94,0.5);
+      color: #bbf7d0;
+      font-size: 0.72rem;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 3.2rem 0;
+    }
+
+    .section-header {
+      max-width: 650px;
+      margin: 0 auto 2rem;
+      text-align: center;
+    }
+
+    .section-kicker {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-soft);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.7rem;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title span {
+      color: #a5b4fc;
+    }
+
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .card {
+      background: radial-gradient(circle at 0 0, rgba(79,70,229,0.17), transparent 55%),
+                  #020617;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.95);
+      padding: 1.1rem 1.1rem 1.05rem;
+      box-shadow: var(--shadow-subtle);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  border-color var(--transition-fast),
+                  background var(--transition-fast);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% -10%, rgba(236,72,153,0.22), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(79,70,229,0.9);
+      box-shadow: 0 24px 60px rgba(15,23,42,0.95);
+      background: radial-gradient(circle at 0 0, rgba(79,70,229,0.24), transparent 55%),
+                  #020617;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      margin-bottom: 0.7rem;
+    }
+
+    .card ul {
+      list-style: none;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .card ul li {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .card ul li::before {
+      content: "•";
+      font-size: 0.9rem;
+      color: #a5b4fc;
+    }
+
+    /* PROCESS */
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .process-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .step-card {
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem 0.8rem;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-top: 0.15rem;
+    }
+
+    .step-main h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .step-main p {
+      font-size: 0.83rem;
+      color: var(--text-soft);
+      margin-bottom: 0.4rem;
+    }
+
+    .step-main span {
+      font-size: 0.76rem;
+      color: #a5b4fc;
+    }
+
+    .process-aside {
+      border-radius: 22px;
+      border: 1px solid rgba(79,70,229,0.6);
+      background: radial-gradient(circle at 0 0, rgba(79,70,229,0.2), transparent 55%),
+                  #020617;
+      padding: 1.2rem 1.3rem;
+      box-shadow: var(--shadow-soft);
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .process-aside h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .process-aside strong {
+      color: #e5e7eb;
+    }
+
+    .process-aside ul {
+      margin-top: 0.6rem;
+      padding-left: 1.1rem;
+    }
+
+    .process-aside li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* WHY US */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+
+    .pill-stat {
+      padding: 0.7rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+      background: rgba(15,23,42,0.85);
+      margin-bottom: 0.5rem;
+    }
+
+    .pill-stat strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    /* PORTFOLIO */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .project-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      padding: 0.9rem 1rem;
+    }
+
+    .project-badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: inline-block;
+      margin-bottom: 0.4rem;
+      color: var(--text-soft);
+    }
+
+    .project-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .project-card p {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-bottom: 0.4rem;
+    }
+
+    .project-meta {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* PRICING */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .pricing-card {
+      background: #020617;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.95);
+      padding: 1.1rem 1.1rem 1rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .pricing-card.primary {
+      border-color: rgba(79,70,229,0.9);
+      box-shadow: var(--shadow-soft);
+      background: radial-gradient(circle at 0 0, rgba(79,70,229,0.25), transparent 55%),
+                  #020617;
+    }
+
+    .pricing-label {
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-title {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .pricing-price {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .pricing-price span {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--text-soft);
+    }
+
+    .pricing-card p {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-bottom: 0.6rem;
+    }
+
+    .pricing-card ul {
+      list-style: none;
+      margin-bottom: 0.7rem;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .pricing-card ul li {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-card ul li::before {
+      content: "✓";
+      font-size: 0.85rem;
+      color: #4ade80;
+    }
+
+    .pricing-note {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .faq-item {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    .faq-item strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .faq-item p {
+      color: var(--text-soft);
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr;
+      gap: 2rem;
+    }
+
+    .about-card {
+      border-radius: 20px;
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      padding: 1.1rem 1.1rem 1rem;
+      font-size: 0.86rem;
+      color: var(--text-soft);
+    }
+
+    .about-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      color: #e5e7eb;
+    }
+
+    .about-card ul {
+      margin-top: 0.4rem;
+      padding-left: 1.1rem;
+    }
+
+    .about-card li {
+      margin-bottom: 0.25rem;
+    }
+
+    /* CONTACT */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.1fr);
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    form {
+      border-radius: 20px;
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #020617;
+      padding: 1.1rem 1.2rem 1.1rem;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .field {
+      margin-bottom: 0.9rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: #e5e7eb;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(31,41,55,0.95);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  background var(--transition-fast);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(148,163,184,0.7);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79,70,229,0.7);
+      background: #020617;
+    }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      margin-top: -0.15rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-aside {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .contact-aside h3 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      color: #e5e7eb;
+    }
+
+    .contact-aside ul {
+      margin-top: 0.4rem;
+      padding-left: 1.1rem;
+    }
+
+    .contact-aside li {
+      margin-bottom: 0.3rem;
+    }
+
+    .alert {
+      font-size: 0.78rem;
+      margin-bottom: 0.7rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 9px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .alert strong {
+      color: #e5e7eb;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(15,23,42,1);
+      background: #020617;
+      padding: 1.4rem 0 1.3rem;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-top: 2rem;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: var(--text-soft);
+    }
+
+    .footer-links a:hover {
+      color: #e5e7eb;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.7rem;
+    }
+
+    .footer-pill {
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .process-grid,
+      .faq-grid,
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero {
+        padding-top: 3rem;
+      }
+
+      .hero-card {
+        order: -1;
+      }
+
+      .services-grid,
+      .portfolio-grid,
+      .pricing-grid,
+      .why-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      nav ul {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+
+      .services-grid,
+      .portfolio-grid,
+      .pricing-grid,
+      .why-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+
+      section {
+        padding: 2.5rem 0;
+      }
+
+      .hero {
+        padding-top: 2.4rem;
+      }
+
+      .form-row {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1.1rem;
+      }
+
+      .hero h1 {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <div class="nav">
+        <a href="#top" class="logo">
+          <div class="logo-mark">L</div>
+          <div class="logo-text">
+            CodeArc
+            <span>MVP & webbstudio</span>
+          </div>
+        </a>
+
+        <nav>
+          <ul>
+            <li><a href="#services">Tjänster</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#portfolio">Case</a></li>
+            <li><a href="#pricing">Priser</a></li>
+            <li><a href="#about">Om oss</a></li>
+            <li><a href="#contact">Kontakt</a></li>
+            <li>
+              <button class="nav-cta" onclick="scrollToId('contact')">
+                Boka samtal <span>↗</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="mobile-toggle" aria-label="Öppna meny" onclick="toggleMobileMenu(this)">
+          <span class="bar1"></span>
+          <span class="bar2"></span>
+          <span class="bar3"></span>
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <ul>
+          <li><a href="#services" onclick="closeMobileMenu()">Tjänster</a></li>
+          <li><a href="#process" onclick="closeMobileMenu()">Process</a></li>
+          <li><a href="#portfolio" onclick="closeMobileMenu()">Case</a></li>
+          <li><a href="#pricing" onclick="closeMobileMenu()">Priser</a></li>
+          <li><a href="#about" onclick="closeMobileMenu()">Om oss</a></li>
+          <li><a href="#contact" onclick="closeMobileMenu()">Kontakt</a></li>
+          <li><button class="nav-cta" onclick="scrollToId('contact'); closeMobileMenu()">Boka samtal ↗</button></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="hero-kicker">
+            <span></span>
+            Från idé till MVP – utan krångel
+          </div>
+          <h1>
+            Vi bygger din <span>MVP, webb & backend</span> – snabbt, tydligt & flexibelt.
+          </h1>
+          <p class="hero-sub">
+            CodeArc är en liten studio som hjälper entreprenörer och bolag att
+            ta sig från “vi borde bygga något” till en fungerande prototyp,
+            webbplats eller system – med smart kod, AI-stöd och supertydlig kommunikation.
+          </p>
+
+          <div class="hero-cta-row">
+            <button class="btn-primary" onclick="scrollToId('contact')">
+              Berätta om din idé
+              <span>→</span>
+            </button>
+            <button class="btn-secondary" onclick="scrollToId('services')">
+              Se vad vi kan hjälpa till med
+            </button>
+          </div>
+
+          <div class="hero-meta">
+            <div><strong>Fokus:</strong> MVP:er, webb, databaser & test</div>
+            <div><strong>Teknik:</strong> JS/TS, Node, SQL, AI-verktyg</div>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Snabb översikt">
+          <div class="hero-card-header">
+            <div>
+              <div class="badge-pill">
+                <span class="dot"></span>
+                MVP status: tillgänglig kapacitet
+              </div>
+              <div class="hero-card-title">Typiskt kundcase</div>
+              <div class="hero-card-sub">
+                Startup med en idé, budget runt 40 000 kr – vill testa på riktiga användare.
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-box">
+              <div class="stat-label">Leverans</div>
+              <div class="stat-value">4–6 veckor <span>*typiskt MVP-spann</span></div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Scope</div>
+              <div class="stat-value">Core-funktioner <span>+ enkel admin</span></div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Budget</div>
+              <div class="stat-value">fr. 35–50k <span>exkl. moms</span></div>
+            </div>
+          </div>
+
+          <div class="hero-timeline">
+            <div class="hero-timeline-row">
+              <div class="step-pill">1</div>
+              <div>
+                <div class="hero-timeline-label">Idé & scope (1–2 samtal)</div>
+                <div class="hero-timeline-text">Vi ringar in minsta användbara version – vad måste finnas för att du ska kunna testa?</div>
+              </div>
+            </div>
+            <div class="hero-timeline-row">
+              <div class="step-pill">2</div>
+              <div>
+                <div class="hero-timeline-label">Klickbar prototyp</div>
+                <div class="hero-timeline-text">Wireframes/UI för feedback innan vi lägger tid på kod.</div>
+              </div>
+            </div>
+            <div class="hero-timeline-row">
+              <div class="step-pill">3</div>
+              <div>
+                <div class="hero-timeline-label">Bygg & första release</div>
+                <div class="hero-timeline-text">Vi itererar snabbt, testar funktioner och deployar en första version.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card-footer">
+            <div>
+              <span class="strong">Vill du göra liknande resa?</span><br />
+              Skriv några rader om din idé så återkommer vi.
+            </div>
+            <div class="pill">Gratis första avstämning</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Tjänster</div>
+          <h2 class="section-title">Allt du behöver – från <span>idé till MVP</span>.</h2>
+          <p class="section-sub">
+            Vi är inte en “vi kan allt”-byrå. Vi fokuserar på det som faktiskt
+            tar dig framåt: en tydlig MVP, en stabil backend, en enkel men
+            professionell frontend – och struktur kring krav, testning och drift.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <article class="card">
+            <div class="card-icon">⚡</div>
+            <h3>MVP-utveckling</h3>
+            <p>
+              Vi tar din idé och kokar ner den till en första version som går
+              att testa på riktiga användare – utan att slösa budget på “nice to have”.
+            </p>
+            <ul>
+              <li>Scope-workshop: vad är minsta användbara produkt?</li>
+              <li>Klickbar prototyp / enkel design</li>
+              <li>Utveckling av core-flöden (t.ex. onboarding, bokning, formulär)</li>
+              <li>Grundläggande analytics/spårning</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🌐</div>
+            <h3>Webb & system</h3>
+            <p>
+              Från enklare landningssidor till databasdrivna system – vi bygger
+              lösningar som går att växa vidare på.
+            </p>
+            <ul>
+              <li>Responsiva webbplatser (marknads- & informationssidor)</li>
+              <li>Paneler/admin-gränssnitt för att hantera data</li>
+              <li>Integration mot databaser & API:er</li>
+              <li>Grundläggande användarhantering (login/roller)</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🤖</div>
+            <h3>AI & automation</h3>
+            <p>
+              Vi använder AI för att snabba upp både utveckling och själva
+              produkten när det passar.
+            </p>
+            <ul>
+              <li>AI-assisterad utveckling för lägre kostnad</li>
+              <li>Enkla AI-funktioner (t.ex. textförslag, formulärhjälp)</li>
+              <li>Struktur för hur du kan använda AI i din verksamhet</li>
+              <li>Rådgivning kring vad som är realistiskt inom din budget</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🗄️</div>
+            <h3>Databaser & struktur</h3>
+            <p>
+              Bra datamodellering från början gör allting enklare senare –
+              rapporter, analys, vidareutveckling.
+            </p>
+            <ul>
+              <li>Databasschema (SQL), relationer & index</li>
+              <li>API-endpoints för att läsa/skriva data</li>
+              <li>Enkla dashboards/listor med filtrering/sök</li>
+              <li>Grundläggande dataskydds- & säkerhetstänk</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🧪</div>
+            <h3>Testning & kvalitet</h3>
+            <p>
+              Vi tänker kvalitet från start – inte “sen”. Enkla men viktiga
+              tester gör att du vågar visa produkten utåt.
+            </p>
+            <ul>
+              <li>Smoke tests & regression-tänk vid ändringar</li>
+              <li>Enkla enhetstester</li>
+                 <li>Enkla enhetstester på kritiska delar</li>
+              <li>Bugghantering & basic loggning</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🔁</div>
+            <h3>Support & vidareutveckling</h3>
+            <p>
+              När första versionen är ute hjälper vi till att justera, förbättra
+              och bygga vidare utifrån riktig användarfeedback.
+            </p>
+            <ul>
+              <li>Löpande förbättringar efter lansering</li>
+              <li>Prioritering av roadmap & nästa steg</li>
+              <li>Teknisk rådgivning inför nya funktioner</li>
+              <li>Möjlighet till supportpaket per månad</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section id="process">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Process</div>
+          <h2 class="section-title">En process som <span>minskar risk</span> och ökar fart.</h2>
+          <p class="section-sub">
+            Vi försöker göra det så enkelt som möjligt för dig som beställer.
+            Tydliga steg, tydlig scope, tydlig feedback – och inget onödigt fluff.
+          </p>
+        </div>
+
+        <div class="process-grid">
+          <div class="process-list">
+            <article class="step-card">
+              <div class="step-number">1</div>
+              <div class="step-main">
+                <h3>Första samtal & behov</h3>
+                <p>
+                  Du berättar om din idé, situation och ungefärlig budget. Vi
+                  ställer frågor, föreslår alternativ och säger rakt ut om något inte är realistiskt.
+                </p>
+                <span>Resultat: gemensam förståelse & grov riktning.</span>
+              </div>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">2</div>
+              <div class="step-main">
+                <h3>Scope & MVP-definition</h3>
+                <p>
+                  Vi ringar in vad som <em>måste</em> finnas i första versionen
+                  – och vad som kan komma senare. Här pratar vi flöden, sidor,
+                  roller och “done”-kriterier.
+                </p>
+                <span>Resultat: kort specifikation + uppskattning.</span>
+              </div>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">3</div>
+              <div class="step-main">
+                <h3>Prototyp & feedback</h3>
+                <p>
+                  Vi skissar på gränssnitt (low/medium fidelity) så att du kan
+                  klicka igenom flödet innan vi bygger. Här är det billigt att ändra sig.
+                </p>
+                <span>Resultat: klickbar prototyp / wireframes.</span>
+              </div>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">4</div>
+              <div class="step-main">
+                <h3>Utveckling & test</h3>
+                <p>
+                  Vi bygger backend, frontend och integrationer enligt överenskommet scope.
+                  Under tiden får du löpande demos, så inget kommer som en överraskning.
+                </p>
+                <span>Resultat: första körbara MVP-versionen.</span>
+              </div>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">5</div>
+              <div class="step-main">
+                <h3>Lansering & vidare</h3>
+                <p>
+                  Vi hjälper dig sätta upp miljö, deploy, grundläggande loggning
+                  och enkla mätetal. Efter lansering kan vi följa upp och planera
+                  nästa iteration.
+                </p>
+                <span>Resultat: produkt ute hos riktiga användare.</span>
+              </div>
+            </article>
+          </div>
+
+          <aside class="process-aside">
+            <h3>Så här brukar ett MVP-upplägg se ut</h3>
+            <p>
+              Inget projekt är exakt likadant, men i många fall landar vi i en
+              liknande struktur – speciellt när budgeten ligger runt 30–60k.
+            </p>
+            <ul>
+              <li><strong>1–2 veckor:</strong> scope, prototyp & plan.</li>
+              <li><strong>2–4 veckor:</strong> utveckling, test, justeringar.</li>
+              <li><strong>1 vecka:</strong> lansering, support och finjustering.</li>
+            </ul>
+            <p style="margin-top: 0.6rem;">
+              Vill du bara ha hjälp med en del – t.ex. databasen, API:et eller
+              en landningssida – går det såklart lika bra.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY US -->
+    <section id="why">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Varför oss</div>
+          <h2 class="section-title">Litet team, <span>stor flexibilitet</span>.</h2>
+          <p class="section-sub">
+            Vi är ett litet, tekniskt team som gillar tydlighet. Du får
+            direktkontakt med de som bygger – inga långa kedjor av projektledare.
+          </p>
+        </div>
+
+        <div class="why-grid">
+          <article class="card">
+            <div class="pill-stat"><strong>Fokus på MVP</strong> – inte stora IT-projekt</div>
+            <h3>Vi älskar “lagom” lösningar</h3>
+            <p>
+              Målet är inte att bygga den största lösningen, utan den minsta
+              som ger mest värde för dig just nu.
+            </p>
+            <ul>
+              <li>Hackar bort onödiga features</li>
+              <li>Ser till att du snabbt kan testa i verkligheten</li>
+              <li>Tydlig prioritering vad som kan komma “sen”</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="pill-stat"><strong>Teknik + affär</strong> i samma rum</div>
+            <h3>Vi pratar både kod och business</h3>
+            <p>
+              Vi kommer själva från kombon IT & ekonomi/projekt – vilket gör
+              det enklare att prata om budget, risk och affärsnytta.
+            </p>
+            <ul>
+              <li>Hjälper dig välja rätt nivå från start</li>
+              <li>Kan utmana om något inte känns värt att bygga</li>
+              <li>Ser till att du får en lösning du faktiskt kan använda</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="pill-stat"><strong>Transparent</strong> prissättning & dialog</div>
+            <h3>Inga konstiga överraskningar</h3>
+            <p>
+              Vi är ärliga om vad som ryms i budgeten – och vad som inte gör det.
+              Du får löpande avstämningar längs vägen.
+            </p>
+            <ul>
+              <li>Fastpris eller tydliga estimat</li>
+              <li>Regelbunden avstämning kring scope</li>
+              <li>Du kan alltid pausa eller justera</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Case & exempel</div>
+          <h2 class="section-title">Vad vi kan <span>bygga åt dig</span>.</h2>
+          <p class="section-sub">
+            Här är exempel på typiska upplägg vi gör. Några är verkliga, andra
+            är anonymiserade/fiktiva för att visa ungefär vad du kan få.
+          </p>
+        </div>
+
+        <div class="portfolio-grid">
+          <article class="project-card">
+            <div class="project-badge">MVP • Bokningsplattform</div>
+            <h3>Bokningssystem för coachingtjänst</h3>
+            <p>
+              Enkel plattform där kunder kan boka tider, betala och få
+              bekräftelse – med adminpanel för att se kommande bokningar.
+            </p>
+            <div class="project-meta">
+              <span>Leverans: ca 5 veckor</span>
+              <span>Budget: ~45 000 kr</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-badge">Webb • Landningssida</div>
+            <h3>Landningssida för ny SaaS-tjänst</h3>
+            <p>
+              Marknadssida med sektioner för värdeerbjudande, funktioner,
+              prisplaner och kontakt, optimerad för att boka möten.
+            </p>
+            <div class="project-meta">
+              <span>Leverans: 1–2 veckor</span>
+              <span>Budget: ~12–18 000 kr</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-badge">System • Intern dashboard</div>
+            <h3>Dashboard för intern data</h3>
+            <p>
+              Enkelt webbgränssnitt ovanpå databas där teamet kan söka, filtrera
+              och exportera data – istället för Excel-kaos.
+            </p>
+            <div class="project-meta">
+              <span>Leverans: 3–4 veckor</span>
+              <span>Budget: ~30–40 000 kr</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Priser</div>
+          <h2 class="section-title">Tydliga upplägg – <span>inga överraskningar</span>.</h2>
+          <p class="section-sub">
+            Varje projekt är unikt, men här är typiska paket för att ge en
+            känsla. Alla priser är exklusive moms.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="pricing-card">
+            <div class="pricing-label">Start</div>
+            <h3 class="pricing-title">Landningssida</h3>
+            <div class="pricing-price">fr. 10 000 kr <span>/ fastpris</span></div>
+            <p>
+              För dig som behöver en enkel, professionell webbplats för att
+              presentera din tjänst eller idé.
+            </p>
+            <ul>
+              <li>1–3 sektioner (t.ex. hero, om, kontakt)</li>
+              <li>Responsiv design (mobil & desktop)</li>
+              <li>Enkel kontaktformulärlösning</li>
+              <li>Grundläggande SEO-struktur</li>
+            </ul>
+            <button class="btn-secondary" onclick="scrollToId('contact')">Diskutera landningssida</button>
+          </article>
+
+          <article class="pricing-card primary">
+            <div class="pricing-label">Mest populär</div>
+            <h3 class="pricing-title">MVP-paket</h3>
+            <div class="pricing-price">ca 35–60 000 kr <span>/ projekt</span></div>
+            <p>
+              Perfekt om du vill testa en idé på riktiga användare, med
+              inloggning, flöden och enkel admin.
+            </p>
+            <ul>
+              <li>Scope-workshop & prototyp</li>
+              <li>Core-flöden (t.ex. bokning, formulär, onboarding)</li>
+              <li>Enkel adminpanel</li>
+              <li>Deploy till vald miljö</li>
+            </ul>
+            <button class="btn-primary" onclick="scrollToId('contact')">Be om offert för MVP</button>
+          </article>
+
+          <article class="pricing-card">
+            <div class="pricing-label">Flex</div>
+            <h3 class="pricing-title">Löpande timmar</h3>
+            <div class="pricing-price">fr. 850–1 050 kr <span>/ timme</span></div>
+            <p>
+              För dig som redan har något igång och vill ha hjälp med
+              vidareutveckling, buggar eller rådgivning.
+            </p>
+            <ul>
+              <li>Vidareutveckling & refaktorering</li>
+              <li>Teknisk bollplank / code review</li>
+              <li>Hjälp med databaser & API:er</li>
+              <li>Möjlighet till mindre fasta deluppdrag</li>
+            </ul>
+            <button class="btn-secondary" onclick="scrollToId('contact')">Prata om löpande stöd</button>
+          </article>
+        </div>
+
+        <p class="pricing-note">
+          Exakta priser beror på scope, teknikval och tidsplan. Vi tar alltid ett kort kostnadsfritt
+          uppstartssamtal innan vi lämnar offert.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Vanliga frågor</div>
+          <h2 class="section-title">Frågor vi <span>ofta får</span>.</h2>
+          <p class="section-sub">
+            Här är svar på några typiska frågor. Hittar du inte det du undrar över?
+            Skriv bara några rader i formuläret längre ner.
+          </p>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-list">
+            <article class="faq-item">
+              <strong>Hur exakt behöver min idé vara?</strong>
+              <p>
+                Inte särskilt. Det räcker ofta med att du kan beskriva problemet, målgruppen
+                och ungefär vad du vill att folk ska kunna göra. Resten tar vi fram tillsammans.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <strong>Jobbar ni bara med nya idéer, eller även befintliga system?</strong>
+              <p>
+                Vi gör båda. Vi kan hoppa in i befintliga lösningar (om tekniken är rimlig)
+                eller bygga helt från scratch. Vi är ärliga om det är bättre att börja om.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <strong>Vilken teknik använder ni?</strong>
+              <p>
+                Ofta ligger fokus på JavaScript/TypeScript, Node, SQL-databaser och moderna
+                frontendramverk. Men vi väljer hellre det som passar case och budget än
+                det “trendiga”.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <strong>Kan ni hjälpa till med drift och hosting?</strong>
+              <p>
+                Ja, vi kan föreslå och sätta upp en rimlig lösning (t.ex. Vercel, Railway,
+                Render, klassisk VPS eller molnleverantör). Antingen står du på avtalet, eller
+                så hjälper vi dig via vår setup.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <strong>Är första samtalet verkligen gratis?</strong>
+              <p>
+                Ja. Vi tar inte betalt för att prata igenom din idé och se om vi är rätt match.
+                Om det känns bra för båda, tar vi det vidare.
+              </p>
+            </article>
+          </div>
+
+          <aside class="about-card">
+            <h3>Snabb checklista – är vi rätt för dig?</h3>
+            <p>
+              Vi passar extra bra för dig som:
+            </p>
+            <ul>
+              <li>Har en tydlig eller halvtydlig idé du vill testa</li>
+              <li>Vill ha en första version, inte ett “färdigt evighetsprojekt”</li>
+              <li>Gillar raka besked kring vad som ryms i budgeten</li>
+              <li>Tycker det är skönt att prata direkt med utvecklarna</li>
+            </ul>
+            <p style="margin-top: 0.6rem;">
+              Känner du igen dig i listan? Då är chansen stor att vi kan göra något bra ihop.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Om CodeArc</div>
+          <h2 class="section-title">Bakom <span>studion</span>.</h2>
+          <p class="section-sub">
+            CodeArc är en liten, flexibel studio med rötter i både IT,
+            ekonomi och projektledning. Vi gillar kombon teknik + verklig nytta.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <article class="about-card">
+            <h3>Vilka vi är</h3>
+            <p>
+              Vi är ett litet team som jobbar nära entreprenörer, småbolag och
+              personer som vill testa nya idéer. I stället för stora långa
+              projekt gillar vi korta, fokuserade MVP-resor.
+            </p>
+            <ul>
+              <li>Erfarenhet av webbutveckling & databaser</li>
+              <li>Bakgrund inom IT & ekonomi/projektledning</li>
+              <li>Intresse för startups, produkt och UX</li>
+              <li>Jobbar gärna iterativt och agilt</li>
+            </ul>
+          </article>
+
+          <article class="about-card">
+            <h3>Hur vi jobbar</h3>
+            <p>
+              Vi försöker göra samarbetet så friktionsfritt som möjligt:
+            </p>
+            <ul>
+              <li>Vi föredrar korta, tydliga avstämningar</li>
+              <li>Vi dokumenterar beslut och scope skriftligt</li>
+              <li>Vi visar hellre något enkelt snabbt än något “perfekt” om tre månader</li>
+              <li>Vi använder AI-verktyg när det ger fart, men inte när det ger kaos</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-kicker">Kontakt</div>
+          <h2 class="section-title">Berätta kort om din <span>idé eller ditt behov</span>.</h2>
+          <p class="section-sub">
+            Skriv några rader så återkommer vi normalt inom kort med förslag på
+            nästa steg – ofta ett kort digitalt möte.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <form id="contactForm">
+            <div class="alert" id="formAlert" style="display:none;"></div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Namn *</label>
+                <input id="name" name="name" type="text" placeholder="För- och efternamn" required />
+              </div>
+              <div class="field">
+                <label for="email">E-post *</label>
+                <input id="email" name="email" type="email" placeholder="din@epost.se" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="company">Företag / projekt</label>
+                <input id="company" name="company" type="text" placeholder="(valfritt)" />
+              </div>
+              <div class="field">
+                <label for="budget">Ungefärlig budget</label>
+                <select id="budget" name="budget">
+                  <option value="">Välj (om du vill)</option>
+                  <option value="under-20">Under 20 000 kr</option>
+                  <option value="20-40">20 000 – 40 000 kr</option>
+                  <option value="40-70">40 000 – 70 000 kr</option>
+                  <option value="over-70">Över 70 000 kr</option>
+                  <option value="unsure">Osäker</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="projectType">Vad gäller det?</label>
+              <select id="projectType" name="projectType">
+                <option value="">Välj typ (valfritt)</option>
+                <option value="mvp">MVP / ny produktidé</option>
+                <option value="web">Webbplats / landningssida</option>
+                <option value="system">Internt system / dashboard</option>
+                <option value="db">Databas / backend</option>
+                <option value="support">Vidareutveckling / support</option>
+                <option value="other">Annat</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Beskriv kort din idé / ditt behov *</label>
+              <textarea id="message" name="message" placeholder="Några meningar räcker fint." required></textarea>
+            </div>
+
+            <p class="helper-text">
+              * Obligatoriska fält. Vi använder bara dina uppgifter för att kontakta dig kring din förfrågan.
+            </p>
+
+            <button type="submit" class="btn-primary">
+              Skicka förfrågan
+              <span>→</span>
+            </button>
+          </form>
+
+          <aside class="contact-aside">
+            <h3>Föredrar du att ta det steg för steg?</h3>
+            <p>
+              Du kan också bara skriva:
+            </p>
+            <ul>
+              <li>Vem du är</li>
+              <li>Vad du ungefär vill bygga</li>
+              <li>Om du har någon tidsram / budget i huvudet</li>
+            </ul>
+            <p style="margin-top:0.6rem;">
+              Vi svarar med ett första förslag: antingen att vi bokar ett kort
+              samtal, eller att vi skriver några rader tillbaka med vad vi
+              tror är rimligt upplägg.
+            </p>
+
+            <h3 style="margin-top:1.4rem;">Prata direkt?</h3>
+            <p>
+              Om du redan har en personlig kontakt kan du såklart höra av dig
+              direkt till oss via telefon, sms eller LinkedIn – den vägen funkar lika bra.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-row">
+      <div>
+        © <span id="yearSpan"></span> CodeArc – MVP & webbstudio.  
+        <span style="opacity:0.8;">Byggt med fokus på tydlighet & fart.</span>
+      </div>
+      <div class="footer-links">
+        <a href="#services">Tjänster</a>
+        <a href="#pricing">Priser</a>
+        <a href="#contact">Kontakt</a>
+      </div>
+      <div class="footer-social">
+        <div class="footer-pill">Tillgänglig för nya uppdrag</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  function scrollToId(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    window.scrollTo({
+      top: el.offsetTop - 70,
+      behavior: "smooth"
+    });
+  }
+
+  function toggleMobileMenu(btn) {
+    const menu = document.getElementById("mobileMenu");
+    const open = menu.style.display === "block";
+    if (open) {
+      menu.style.display = "none";
+      btn.classList.remove("mobile-open");
+    } else {
+      menu.style.display = "block";
+      btn.classList.add("mobile-open");
+    }
+  }
+
+  function closeMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    const btn = document.querySelector(".mobile-toggle");
+    if (menu) menu.style.display = "none";
+    if (btn) btn.classList.remove("mobile-open");
+  }
+
+  // Enkel fake-form-hantering (frontend)
+  const contactForm = document.getElementById("contactForm");
+  const formAlert = document.getElementById("formAlert");
+
+  if (contactForm && formAlert) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = contactForm.name.value.trim();
+      const email = contactForm.email.value.trim();
+      const message = contactForm.message.value.trim();
+
+      if (!name || !email || !message) {
+        formAlert.style.display = "block";
+        formAlert.style.borderColor = "var(--error)";
+        formAlert.style.color = "#fecaca";
+        formAlert.innerHTML = "<strong>Oops!</strong> Fyll i namn, e-post och meddelande innan du skickar.";
+        return;
+      }
+
+      // Här skulle du normalt skicka datan till ett backend / formulärtjänst
+      formAlert.style.display = "block";
+      formAlert.style.borderColor = "var(--success)";
+      formAlert.style.color = "#bbf7d0";
+      formAlert.innerHTML = "<strong>Tack!</strong> Din förfrågan är skickad (demo-läge). Vi hör av oss så snart vi kan.";
+
+      contactForm.reset();
+    });
+  }
+
+  // Sätt aktuellt år i footer
+  const yearSpan = document.getElementById("yearSpan");
+  if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+  }
+</script>
+</body>
+</html>
+
+
