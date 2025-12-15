@@ -1,3 +1,4 @@
+  console.log("script.js loaded");
   function scrollToId(id) {
     const el = document.getElementById(id);
     if (!el) return;
