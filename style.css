@@ -1,3 +1,14 @@
+    html, body {
+  background: #020617; /* samma som din dark bakgrund */
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overscroll-behavior-y: none;
+}
+
+    
     :root {
       --bg: #050816;
       --bg-alt: #0b1020;
@@ -74,6 +85,8 @@
       align-items: center;
       justify-content: space-between;
       height: 96px;
+      padding: 0 0;              /* vi animerar padding istället */
+      transition: padding 0.25s ease;
     }
 
     .logo {
@@ -102,7 +115,20 @@
   height: 120px;
   width: auto;
   display: block;
+  transition: height 0.25s ease;
 }
+
+/* ===== SCROLL SHRINK (CLEAN) ===== */
+
+header.shrink .nav {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+header.shrink .logo-img {
+  height: 56px;
+}
+
 
 
     .logo-mark::after {
@@ -192,24 +218,6 @@
       transform: translateY(0) scale(0.99);
       box-shadow: 0 8px 22px rgba(15,23,42,0.9);
     }
-
-    /* ===== SCROLL SHRINK LÄGE ===== */
-
-/* mjuk animation när höjder ändras */
-.nav,
-.logo-img {
-  transition: height 0.25s ease;
-}
-
-/* när header har klassen shrink -> krymp navbar + logga */
-header.shrink .nav {
-  height: 70px;
-}
-
-header.shrink .logo-img {
-  height: 56px;
-}
-
 
     .mobile-toggle {
       display: none;

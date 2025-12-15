@@ -1,4 +1,3 @@
-  console.log("script.js loaded");
   function scrollToId(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -63,9 +62,19 @@
     yearSpan.textContent = new Date().getFullYear();
   }
     
-  // Scroll-shrink navbar & logo
+// Scroll-shrink navbar & logo (smooth)
 const header = document.querySelector("header");
+let ticking = false;
 
 window.addEventListener("scroll", () => {
-  header.classList.toggle("shrink", window.scrollY > 80);
-});
+  if (!header) return;
+
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      header.classList.toggle("shrink", window.scrollY > 80);
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
