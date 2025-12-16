@@ -1341,6 +1341,17 @@ header.shrink .nav-cta:hover {
   overflow: hidden;
 }
 
+.panel-anchor{
+  position: absolute;
+  top: 90px;   /* justeras om needed */
+  left: 0;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
 .panel::before{
   content:"";
   position:absolute;

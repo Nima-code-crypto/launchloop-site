@@ -79,54 +79,70 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 // ===============================
-// PROCESS – PROGRESS + GLOW + ACTIVE STEP
+// PROCESS – STABLE SCROLL STORY
 // ===============================
-const processPanels = Array.from(document.querySelectorAll(".process-panels .panel"));
-const processSteps = Array.from(document.querySelectorAll(".process-steps .step"));
-const processRailFill = document.getElementById("processRailFill");
-const processGlow = document.getElementById("processGlow");
+const panels = Array.from(document.querySelectorAll(".process-panels .panel"));
+const steps = Array.from(document.querySelectorAll(".process-steps .step"));
+const anchors = panels.map(p => p.querySelector(".panel-anchor")).filter(Boolean);
 
-function setActiveProcess(stepNum) {
-  // active classes
-  processSteps.forEach(btn => btn.classList.toggle("active", btn.dataset.step === stepNum));
-  processPanels.forEach(panel => panel.classList.toggle("active", panel.dataset.step === stepNum));
+const railFill = document.getElementById("processRailFill");
+const glow = document.getElementById("processGlow");
 
-  // rail fill (0–100%)
-  const idx = processSteps.findIndex(btn => btn.dataset.step === stepNum);
-  if (idx >= 0 && processRailFill && processSteps.length > 1) {
-    const pct = (idx / (processSteps.length - 1)) * 100;
-    processRailFill.style.height = `${pct}%`;
+let isLocked = false;
+let lockTimer = null;
+
+function lock(ms = 700) {
+  isLocked = true;
+  clearTimeout(lockTimer);
+  lockTimer = setTimeout(() => (isLocked = false), ms);
+}
+
+function setActive(stepNum) {
+  steps.forEach(s => s.classList.toggle("active", s.dataset.step === stepNum));
+  panels.forEach(p => p.classList.toggle("active", p.dataset.step === stepNum));
+
+  const idx = steps.findIndex(s => s.dataset.step === stepNum);
+  if (idx >= 0 && railFill && steps.length > 1) {
+    const pct = (idx / (steps.length - 1)) * 100;
+    railFill.style.height = `${pct}%`;
   }
 
-  // glow follows active step
-  const activeBtn = processSteps.find(btn => btn.dataset.step === stepNum);
-  if (activeBtn && processGlow) {
+  const activeBtn = steps.find(s => s.dataset.step === stepNum);
+  if (activeBtn && glow) {
     const y = activeBtn.offsetTop + activeBtn.offsetHeight / 2 - 120;
-    processGlow.style.transform = `translateY(${Math.max(0, y)}px)`;
+    glow.style.transform = `translateY(${Math.max(0, y)}px)`;
   }
 }
 
-// IntersectionObserver: välj den panel som är mest synlig
-const processObserver = new IntersectionObserver((entries) => {
-  const visible = entries
+// Observer på anchors (inte på hela panelen)
+const io = new IntersectionObserver((entries) => {
+  if (isLocked) return;
+
+  // välj den anchor som precis blev synlig
+  const hit = entries
     .filter(e => e.isIntersecting)
     .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-  if (visible) setActiveProcess(visible.target.dataset.step);
-}, { threshold: [0.35, 0.55, 0.75] });
+  if (hit) {
+    const panel = hit.target.closest(".panel");
+    if (panel) setActive(panel.dataset.step);
+  }
+}, { threshold: [0.01], rootMargin: "-35% 0px -55% 0px" });
 
-processPanels.forEach(panel => processObserver.observe(panel));
+anchors.forEach(a => io.observe(a));
 
-// Klick på steg → scrolla till panel (och sätt active direkt)
-processSteps.forEach(btn => {
+// Klick: lås observern medan smooth scroll kör
+steps.forEach(btn => {
   btn.addEventListener("click", () => {
-    const target = document.querySelector(`.panel[data-step="${btn.dataset.step}"]`);
-    if (target) {
-      setActiveProcess(btn.dataset.step);
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    const targetPanel = document.querySelector(`.panel[data-step="${btn.dataset.step}"]`);
+    if (!targetPanel) return;
+
+    setActive(btn.dataset.step);
+    lock(800);
+
+    targetPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
 
 // init
-if (processSteps[0]) setActiveProcess(processSteps[0].dataset.step);
+if (steps[0]) setActive(steps[0].dataset.step);
