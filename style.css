@@ -129,6 +129,19 @@ header.shrink .logo-img {
   height: 56px;
 }
 
+header.shrink nav a {
+  font-size: 0.9rem;
+}
+
+header.shrink .nav-cta {
+  transform: scale(0.88);
+}
+
+header.shrink .nav-cta:hover {
+  transform: scale(0.92); 
+}
+
+
 
 
     .logo-mark::after {
@@ -160,11 +173,15 @@ header.shrink .logo-img {
     }
 
     nav a {
-      font-size: 0.9rem;
-      color: var(--text-soft);
-      position: relative;
-      transition: color var(--transition-fast), transform 0.12s ease-out;
-    }
+    font-size: 1.05rem;
+    color: var(--text-soft);
+    position: relative;
+    transition:
+    font-size 0.25s ease,
+    color var(--transition-fast),
+    transform 0.12s ease-out;
+}
+
 
     nav a::after {
       content: "";
@@ -188,10 +205,10 @@ header.shrink .logo-img {
     }
 
     .nav-cta {
-      padding: 0.45rem 1.1rem;
+      padding: 0.65rem 1.35rem;
       border-radius: var(--radius-full);
       background: linear-gradient(135deg, #4f46e5, #22c55e);
-      font-size: 0.88rem;
+      font-size: 1rem;
       font-weight: 500;
       border: none;
       cursor: pointer;
@@ -199,8 +216,12 @@ header.shrink .logo-img {
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+      transition: 
+                  transform 0.25s ease,
+                  box-shadow var(--transition-fast),
                   filter var(--transition-fast);
+      will-change: transform;
+
     }
 
     .nav-cta span {
