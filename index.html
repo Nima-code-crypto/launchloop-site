@@ -264,101 +264,57 @@
     </section>
 
     <!-- PROCESS -->
-    <section id="process">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-kicker">Process</div>
-          <h2 class="section-title">En process som <span>minskar risk</span> och ökar fart.</h2>
-          <p class="section-sub">
-            Vi försöker göra det så enkelt som möjligt för dig som beställer.
-            Tydliga steg, tydlig scope, tydlig feedback – och inget onödigt fluff.
-          </p>
-        </div>
+    <section id="process" class="process">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">PROCESS</div>
+      <h2>En process som minskar risk och ökar fart.</h2>
+      <p>Fem tydliga steg – med fokus på scope, feedback och leverans.</p>
+    </div>
 
-        <div class="process-grid">
-          <div class="process-list">
-            <article class="step-card">
-              <div class="step-number">1</div>
-              <div class="step-main">
-                <h3>Första samtal & behov</h3>
-                <p>
-                  Du berättar om din idé, situation och ungefärlig budget. Vi
-                  ställer frågor, föreslår alternativ och säger rakt ut om något inte är realistiskt.
-                </p>
-                <span>Resultat: gemensam förståelse & grov riktning.</span>
-              </div>
-            </article>
-
-            <article class="step-card">
-              <div class="step-number">2</div>
-              <div class="step-main">
-                <h3>Scope & MVP-definition</h3>
-                <p>
-                  Vi ringar in vad som <em>måste</em> finnas i första versionen
-                  – och vad som kan komma senare. Här pratar vi flöden, sidor,
-                  roller och “done”-kriterier.
-                </p>
-                <span>Resultat: kort specifikation + uppskattning.</span>
-              </div>
-            </article>
-
-            <article class="step-card">
-              <div class="step-number">3</div>
-              <div class="step-main">
-                <h3>Prototyp & feedback</h3>
-                <p>
-                  Vi skissar på gränssnitt (low/medium fidelity) så att du kan
-                  klicka igenom flödet innan vi bygger. Här är det billigt att ändra sig.
-                </p>
-                <span>Resultat: klickbar prototyp / wireframes.</span>
-              </div>
-            </article>
-
-            <article class="step-card">
-              <div class="step-number">4</div>
-              <div class="step-main">
-                <h3>Utveckling & test</h3>
-                <p>
-                  Vi bygger backend, frontend och integrationer enligt överenskommet scope.
-                  Under tiden får du löpande demos, så inget kommer som en överraskning.
-                </p>
-                <span>Resultat: första körbara MVP-versionen.</span>
-              </div>
-            </article>
-
-            <article class="step-card">
-              <div class="step-number">5</div>
-              <div class="step-main">
-                <h3>Lansering & vidare</h3>
-                <p>
-                  Vi hjälper dig sätta upp miljö, deploy, grundläggande loggning
-                  och enkla mätetal. Efter lansering kan vi följa upp och planera
-                  nästa iteration.
-                </p>
-                <span>Resultat: produkt ute hos riktiga användare.</span>
-              </div>
-            </article>
-          </div>
-
-          <aside class="process-aside">
-            <h3>Så här brukar ett MVP-upplägg se ut</h3>
-            <p>
-              Inget projekt är exakt likadant, men i många fall landar vi i en
-              liknande struktur – speciellt när budgeten ligger runt 30–60k.
-            </p>
-            <ul>
-              <li><strong>1–2 veckor:</strong> scope, prototyp & plan.</li>
-              <li><strong>2–4 veckor:</strong> utveckling, test, justeringar.</li>
-              <li><strong>1 vecka:</strong> lansering, support och finjustering.</li>
-            </ul>
-            <p style="margin-top: 0.6rem;">
-              Vill du bara ha hjälp med en del – t.ex. databasen, API:et eller
-              en landningssida – går det såklart lika bra.
-            </p>
-          </aside>
-        </div>
+    <div class="process-scroll">
+      <div class="process-steps" id="processSteps">
+        <button class="step active" data-step="1"><span>1</span> Första samtal & behov</button>
+        <button class="step" data-step="2"><span>2</span> Scope & MVP-definition</button>
+        <button class="step" data-step="3"><span>3</span> Prototyp & feedback</button>
+        <button class="step" data-step="4"><span>4</span> Utveckling & test</button>
+        <button class="step" data-step="5"><span>5</span> Lansering & vidare</button>
       </div>
-    </section>
+
+      <div class="process-panels">
+        <article class="panel active" data-step="1">
+          <h3>Första samtal & behov</h3>
+          <p>Du berättar om idén, situation och ungefärlig budget. Vi ställer frågor och säger rakt ut vad som är realistiskt.</p>
+          <div class="result">Resultat: gemensam förståelse & grov riktning.</div>
+        </article>
+
+        <article class="panel" data-step="2">
+          <h3>Scope & MVP-definition</h3>
+          <p>Vi ringar in vad som måste finnas i version 1 – och vad som kan komma senare. Flöden, roller, “done”-kriterier.</p>
+          <div class="result">Resultat: kort specifikation + uppskattning.</div>
+        </article>
+
+        <article class="panel" data-step="3">
+          <h3>Prototyp & feedback</h3>
+          <p>Vi skissar gränssnitt (low/medium fidelity) så du kan klicka igenom innan vi bygger.</p>
+          <div class="result">Resultat: klickbar prototyp / wireframes.</div>
+        </article>
+
+        <article class="panel" data-step="4">
+          <h3>Utveckling & test</h3>
+          <p>Vi bygger frontend, backend och integrationer. Du får löpande demos – inga överraskningar.</p>
+          <div class="result">Resultat: första körbara MVP-versionen.</div>
+        </article>
+
+        <article class="panel" data-step="5">
+          <h3>Lansering & vidare</h3>
+          <p>Deploy, logging och grundläggande mätetal. Sen itererar vi med riktig användarfeedback.</p>
+          <div class="result">Resultat: produkt ute hos riktiga användare.</div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- WHY US -->
     <section id="why">

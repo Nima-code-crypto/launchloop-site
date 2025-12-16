@@ -78,3 +78,49 @@ window.addEventListener("scroll", () => {
   }
 }, { passive: true });
 
+// ===============================
+// PROCESS – SCROLL INTERACTION
+// ===============================
+
+const processPanels = document.querySelectorAll(".process-panels .panel");
+const processSteps = document.querySelectorAll(".process-steps .step");
+
+function setActiveProcessStep(step) {
+  processSteps.forEach(btn =>
+    btn.classList.toggle("active", btn.dataset.step === step)
+  );
+  processPanels.forEach(panel =>
+    panel.classList.toggle("active", panel.dataset.step === step)
+  );
+}
+
+const processObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setActiveProcessStep(entry.target.dataset.step);
+      }
+    });
+  },
+  {
+    threshold: 0.55
+  }
+);
+
+processPanels.forEach(panel => processObserver.observe(panel));
+
+// Klick på steg = scrolla till panel
+processSteps.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = document.querySelector(
+      `.panel[data-step="${btn.dataset.step}"]`
+    );
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  });
+});
+

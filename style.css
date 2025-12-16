@@ -1215,3 +1215,85 @@ header.shrink .nav-cta:hover {
         font-size: 2.1rem;
       }
     }
+
+    /* ===============================
+   PROCESS – SCROLL STORY
+================================ */
+
+.process-scroll {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 32px;
+  margin-top: 2.5rem;
+}
+
+/* Vänster: steg */
+.process-steps {
+  position: sticky;
+  top: 120px; /* under din navbar */
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.45);
+  border: 1px solid rgba(148,163,184,0.18);
+  color: rgba(226,232,240,0.85);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.step span {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  border: 1px solid rgba(148,163,184,0.3);
+}
+
+.step.active {
+  background: rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.55);
+  transform: translateY(-1px);
+}
+
+/* Höger: paneler */
+.process-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.panel {
+  border-radius: 20px;
+  padding: 2rem;
+  background: rgba(2,6,23,0.45);
+  border: 1px solid rgba(148,163,184,0.18);
+  opacity: 0.25;
+  transform: translateY(30px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.panel.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: rgba(2,6,23,0.35);
+  border: 1px solid rgba(148,163,184,0.2);
+  font-size: 0.85rem;
+}
