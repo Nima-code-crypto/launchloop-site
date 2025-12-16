@@ -79,48 +79,54 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 // ===============================
-// PROCESS – SCROLL INTERACTION
+// PROCESS – PROGRESS + GLOW + ACTIVE STEP
 // ===============================
+const processPanels = Array.from(document.querySelectorAll(".process-panels .panel"));
+const processSteps = Array.from(document.querySelectorAll(".process-steps .step"));
+const processRailFill = document.getElementById("processRailFill");
+const processGlow = document.getElementById("processGlow");
 
-const processPanels = document.querySelectorAll(".process-panels .panel");
-const processSteps = document.querySelectorAll(".process-steps .step");
+function setActiveProcess(stepNum) {
+  // active classes
+  processSteps.forEach(btn => btn.classList.toggle("active", btn.dataset.step === stepNum));
+  processPanels.forEach(panel => panel.classList.toggle("active", panel.dataset.step === stepNum));
 
-function setActiveProcessStep(step) {
-  processSteps.forEach(btn =>
-    btn.classList.toggle("active", btn.dataset.step === step)
-  );
-  processPanels.forEach(panel =>
-    panel.classList.toggle("active", panel.dataset.step === step)
-  );
+  // rail fill (0–100%)
+  const idx = processSteps.findIndex(btn => btn.dataset.step === stepNum);
+  if (idx >= 0 && processRailFill && processSteps.length > 1) {
+    const pct = (idx / (processSteps.length - 1)) * 100;
+    processRailFill.style.height = `${pct}%`;
+  }
+
+  // glow follows active step
+  const activeBtn = processSteps.find(btn => btn.dataset.step === stepNum);
+  if (activeBtn && processGlow) {
+    const y = activeBtn.offsetTop + activeBtn.offsetHeight / 2 - 120;
+    processGlow.style.transform = `translateY(${Math.max(0, y)}px)`;
+  }
 }
 
-const processObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setActiveProcessStep(entry.target.dataset.step);
-      }
-    });
-  },
-  {
-    threshold: 0.55
-  }
-);
+// IntersectionObserver: välj den panel som är mest synlig
+const processObserver = new IntersectionObserver((entries) => {
+  const visible = entries
+    .filter(e => e.isIntersecting)
+    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+  if (visible) setActiveProcess(visible.target.dataset.step);
+}, { threshold: [0.35, 0.55, 0.75] });
 
 processPanels.forEach(panel => processObserver.observe(panel));
 
-// Klick på steg = scrolla till panel
+// Klick på steg → scrolla till panel (och sätt active direkt)
 processSteps.forEach(btn => {
   btn.addEventListener("click", () => {
-    const target = document.querySelector(
-      `.panel[data-step="${btn.dataset.step}"]`
-    );
+    const target = document.querySelector(`.panel[data-step="${btn.dataset.step}"]`);
     if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
+      setActiveProcess(btn.dataset.step);
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   });
 });
 
+// init
+if (processSteps[0]) setActiveProcess(processSteps[0].dataset.step);
