@@ -1,3 +1,24 @@
+  // ===============================
+// FORCE TOP ON LOAD / REFRESH
+// ===============================
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+// Direkt (så tidigt som möjligt)
+window.scrollTo(0, 0);
+
+// När sidan visas (funkar även vid back/forward cache)
+window.addEventListener("pageshow", () => {
+  window.scrollTo(0, 0);
+});
+
+// Extra säkerhet vid refresh/navigering
+window.addEventListener("beforeunload", () => {
+  window.scrollTo(0, 0);
+});
+
+  
   function scrollToId(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -61,6 +82,24 @@
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
   }
+
+function goAbsoluteTop() {
+  // Stäng mobilmeny om den är öppen
+  try { closeMobileMenu(); } catch (e) {}
+
+  // 1) Direkt hård reset
+  window.scrollTo(0, 0);
+
+  // 2) På nästa frame (efter layout)
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+
+    // Säkerställ navbar default-läge direkt
+    header?.classList.remove("shrink");
+  });
+}
+
+
     
 // Scroll-shrink navbar & logo (smooth)
 const header = document.querySelector("header");
@@ -77,6 +116,9 @@ window.addEventListener("scroll", () => {
     ticking = true;
   }
 }, { passive: true });
+// Kör en gång direkt så default-läget blir korrekt vid start
+header?.classList.toggle("shrink", window.scrollY > 80);
+
 
 // ===============================
 // PROCESS (QS) – STICKY TIMELINE + STICKY CARD
@@ -274,9 +316,6 @@ const qsIO = new IntersectionObserver(() => {
 
 qsTriggers.forEach(t => qsIO.observe(t));
 
-
-
-
 // Klick: scrolla till trigger (center) och lås observern en kort stund
 qsSteps.forEach(btn => {
   btn.addEventListener("click", () => {
@@ -298,5 +337,40 @@ window.addEventListener("load", () => {
   setQS("1");
   if (qsFill) qsFill.style.transform = "scaleY(0)";
 });
+
+// Tvinga absolut toppläge vid load (för navbar-zoom m.m.)
+window.addEventListener("load", () => {
+  window.scrollTo(0, 0);
+  header?.classList.remove("shrink");
+});
+
+function goAbsoluteTop() {
+  try { closeMobileMenu(); } catch (e) {}
+
+  const html = document.documentElement;
+  const prev = html.style.scrollBehavior;
+  html.style.scrollBehavior = "auto";
+
+  window.scrollTo(0, 0);
+
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    html.style.scrollBehavior = prev || "";
+    header?.classList.remove("shrink");
+  });
+}
+
+const logoHome = document.getElementById("logoHome");
+
+if (logoHome) {
+  logoHome.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    goAbsoluteTop();
+  });
+}
+
+
+
 
 
