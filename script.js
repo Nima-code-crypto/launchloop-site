@@ -79,70 +79,183 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 // ===============================
-// PROCESS – STABLE SCROLL STORY
+// PROCESS (QS) – STICKY TIMELINE + STICKY CARD
 // ===============================
-const panels = Array.from(document.querySelectorAll(".process-panels .panel"));
-const steps = Array.from(document.querySelectorAll(".process-steps .step"));
-const anchors = panels.map(p => p.querySelector(".panel-anchor")).filter(Boolean);
+let lastStep = null;
 
-const railFill = document.getElementById("processRailFill");
-const glow = document.getElementById("processGlow");
+const qsSteps = Array.from(document.querySelectorAll(".qs-step"));
+const qsTriggers = Array.from(document.querySelectorAll(".qs-trigger"));
 
-let isLocked = false;
-let lockTimer = null;
+const qsFill = document.getElementById("qsRailFill");
+const qsGlow = document.getElementById("qsGlow");
 
-function lock(ms = 700) {
-  isLocked = true;
-  clearTimeout(lockTimer);
-  lockTimer = setTimeout(() => (isLocked = false), ms);
+const qsKicker = document.getElementById("qsKicker");
+const qsTitle = document.getElementById("qsTitle");
+const qsBody = document.getElementById("qsBody");
+const qsResult = document.getElementById("qsResult");
+
+let qsLocked = false;
+let qsLockTimer = null;
+const qsLock = (ms = 650) => {
+  qsLocked = true;
+  clearTimeout(qsLockTimer);
+  qsLockTimer = setTimeout(() => (qsLocked = false), ms);
+};
+
+function setQS(stepNum) {
+  if (stepNum === lastStep) return;
+  lastStep = stepNum;
+
+  qsSteps.forEach(b => b.classList.toggle("active", b.dataset.step === stepNum));
+
+  // glow följer aktivt steg
+  const activeBtn = qsSteps.find(b => b.dataset.step === stepNum);
+  if (activeBtn && qsGlow) {
+    const y = activeBtn.offsetTop + activeBtn.offsetHeight / 2 - 140;
+    qsGlow.style.transform = `translateY(${Math.max(0, y)}px)`;
+  }
+
+  // uppdatera sticky card content
+  const trg = qsTriggers.find(t => t.dataset.step === stepNum);
+  if (trg) {
+    if (qsKicker) qsKicker.textContent = `Steg ${stepNum}`;
+    if (qsTitle) qsTitle.textContent = trg.dataset.title || "";
+    if (qsBody) qsBody.textContent = trg.dataset.body || "";
+    if (qsResult) qsResult.textContent = trg.dataset.result || "";
+  }
 }
 
-function setActive(stepNum) {
-  steps.forEach(s => s.classList.toggle("active", s.dataset.step === stepNum));
-  panels.forEach(p => p.classList.toggle("active", p.dataset.step === stepNum));
+// ===============================
+// QS – CONTINUOUS RAIL PROGRESS (smooth)
+// ===============================
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
-  const idx = steps.findIndex(s => s.dataset.step === stepNum);
-  if (idx >= 0 && railFill && steps.length > 1) {
-    const pct = (idx / (steps.length - 1)) * 100;
-    railFill.style.height = `${pct}%`;
+let triggerMids = [];
+
+function recalcTriggerMids(){
+  triggerMids = qsTriggers.map(t => {
+    const r = t.getBoundingClientRect();
+    return (window.scrollY + r.top + r.height / 2);
+  });
+}
+
+// Kör direkt + på resize + efter att sidan laddat
+recalcTriggerMids();
+window.addEventListener("resize", recalcTriggerMids);
+
+let railTicking = false;
+
+function updateRailContinuous(){
+  railTicking = false;
+  if (!qsFill || triggerMids.length < 2) return;
+
+  const y = window.scrollY + window.innerHeight * 0.5; // viewport-mitten
+
+  // Clamp mot första/sista så linjen inte flippar
+  const first = triggerMids[0];
+  const last  = triggerMids[triggerMids.length - 1];
+
+  const yc = clamp(y, first, last);
+
+  let i = 0;
+  while (i < triggerMids.length - 2 && yc > triggerMids[i + 1]) i++;
+
+  const a = triggerMids[i];
+  const b = triggerMids[i + 1];
+  const t = (b - a) === 0 ? 0 : clamp((yc - a) / (b - a), 0, 1);
+
+  const progress = clamp((i + t) / (triggerMids.length - 1), 0, 1);
+
+  // Bara linjen (kontinuerlig)
+  qsFill.style.transform = `scaleY(${progress})`;
+}
+
+
+window.addEventListener("scroll", () => {
+  if (!railTicking) {
+    railTicking = true;
+    requestAnimationFrame(updateRailContinuous);
+  }
+}, { passive: true });
+
+// init
+requestAnimationFrame(updateRailContinuous);
+
+let qsActiveIndex = 0; // håller koll på vilket steg som är aktivt
+
+
+const qsIO = new IntersectionObserver(() => {
+  if (qsLocked) return;
+
+  const viewportMid = window.innerHeight / 2;
+
+  let bestEl = null;
+  let bestDist = Infinity;
+
+  // ✅ kolla ALLA triggers, inte bara entries
+  for (const el of qsTriggers) {
+    const r = el.getBoundingClientRect();
+    if (r.bottom <= 0 || r.top >= window.innerHeight) continue;
+
+    const mid = r.top + r.height / 2;
+    const dist = Math.abs(mid - viewportMid);
+
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestEl = el;
+    }
   }
 
-  const activeBtn = steps.find(s => s.dataset.step === stepNum);
-  if (activeBtn && glow) {
-    const y = activeBtn.offsetTop + activeBtn.offsetHeight / 2 - 120;
-    glow.style.transform = `translateY(${Math.max(0, y)}px)`;
+ if (bestEl) {
+  const bestIndex = qsTriggers.indexOf(bestEl);
+  const curEl = qsTriggers[qsActiveIndex];
+
+  // hysteresis: byt bara om nya är "tydligt bättre"
+  const viewportMid = window.innerHeight / 2;
+
+  const dist = (el) => {
+    const r = el.getBoundingClientRect();
+    const mid = r.top + r.height / 2;
+    return Math.abs(mid - viewportMid);
+  };
+
+  const bestDist = dist(bestEl);
+  const curDist  = curEl ? dist(curEl) : Infinity;
+
+  if (bestIndex !== -1 && bestDist + 40 < curDist) {
+    qsActiveIndex = bestIndex;
+    setQS(bestEl.dataset.step);
   }
 }
 
-// Observer på anchors (inte på hela panelen)
-const io = new IntersectionObserver((entries) => {
-  if (isLocked) return;
+}, {
+  threshold: 0.01,
+  rootMargin: "-30% 0px -30% 0px"
+});
 
-  // välj den anchor som precis blev synlig
-  const hit = entries
-    .filter(e => e.isIntersecting)
-    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+qsTriggers.forEach(t => qsIO.observe(t));
 
-  if (hit) {
-    const panel = hit.target.closest(".panel");
-    if (panel) setActive(panel.dataset.step);
-  }
-}, { threshold: [0.01], rootMargin: "-35% 0px -55% 0px" });
 
-anchors.forEach(a => io.observe(a));
 
-// Klick: lås observern medan smooth scroll kör
-steps.forEach(btn => {
+
+// Klick: scrolla till trigger (center) och lås observern en kort stund
+qsSteps.forEach(btn => {
   btn.addEventListener("click", () => {
-    const targetPanel = document.querySelector(`.panel[data-step="${btn.dataset.step}"]`);
-    if (!targetPanel) return;
+    const trg = qsTriggers.find(t => t.dataset.step === btn.dataset.step);
+    if (!trg) return;
 
-    setActive(btn.dataset.step);
-    lock(800);
-
-    targetPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    qsActiveIndex = qsTriggers.indexOf(trg); // ✅ lägg till denna
+    setQS(btn.dataset.step);
+    qsLock(800);
+    trg.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(recalcTriggerMids, 350);
   });
 });
 
 // init
-if (steps[0]) setActive(steps[0].dataset.step);
+/*if (qsSteps[0]) setQS(qsSteps[0].dataset.step);*/
+window.addEventListener("load", () => {
+  const first = qsTriggers[0];
+  if (first) setQS(first.dataset.step);
+});
+

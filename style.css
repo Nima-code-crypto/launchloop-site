@@ -1,5 +1,4 @@
     html, body {
-  background: #020617; /* samma som din dark bakgrund */
   height: 100%;
 }
 
@@ -35,14 +34,29 @@ body {
       padding: 0;
     }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                   "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 40%, #000 100%);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+  body{
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text","Segoe UI", sans-serif;
+
+  /* ✅ fallback så det ALDRIG blir vitt */
+  background-color: #020617;
+
+  /* ✅ overlay + bild */
+  background-image:
+    linear-gradient(rgba(2,6,23,0.78), rgba(2,6,23,0.90)),
+    url("./assets/dator.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+
 
     a {
       color: inherit;
@@ -73,10 +87,11 @@ body {
       top: 0;
       z-index: 40;
       backdrop-filter: blur(16px);
-      background: linear-gradient(to bottom,
-                 rgba(2,6,23,0.95),
-                 rgba(2,6,23,0.88),
-                 rgba(2,6,23,0.75));
+        background: linear-gradient(
+    to bottom,
+    rgba(2,6,23,0.85),
+    rgba(2,6,23,0.70)
+  );
       border-bottom: 1px solid rgba(148,163,184,0.1);
     }
 
@@ -1161,6 +1176,10 @@ header.shrink .nav-cta:hover {
         grid-template-columns: minmax(0, 1fr);
       }
 
+      .qs-trigger{
+        height: 45vh;
+      }
+
       .hero {
         padding-top: 3rem;
       }
@@ -1383,3 +1402,220 @@ header.shrink .nav-cta:hover {
   border: 1px solid rgba(148,163,184,0.2);
   font-size: 0.85rem;
 } 
+
+/* ===============================
+   PROCESS – QUICKSOLUTIONS STYLE
+================================ */
+
+.process-scroll.process-qs{
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 40px;
+  margin-top: 2.5rem;
+}
+
+/* Left: sticky timeline box */
+.qs-rail{
+  position: sticky;
+  top: 120px;
+  align-self: start;
+  border-radius: 18px;
+  background: rgba(2,6,23,0.18);
+  border: 1px solid rgba(148,163,184,0.12);
+  backdrop-filter: blur(10px);
+  padding: 18px 16px 18px 22px;
+  overflow: hidden;
+}
+
+/* timeline line */
+.qs-rail-line{
+  position: absolute;
+  left: 14px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: rgba(148,163,184,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ✅ fill uppifrån -> ner */
+.qs-rail-fill{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(to bottom, rgba(34,197,94,0.9), rgba(99,102,241,0.9));
+  border-radius: 999px;
+
+  transform: scaleY(0);
+  transform-origin: top;
+  will-change: transform;
+
+  /* Viktigt: ingen transition här – annars blir det “stegigt” */
+  transition: none;
+}
+
+
+.qs-glow{
+  position: absolute;
+  left: -70px;
+  top: 30px;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+
+  background: radial-gradient(circle, rgba(99,102,241,0.26), transparent 60%);
+
+  filter: blur(4px);              /* ↓ mindre blur = mindre repaint */
+  opacity: 0.65;                  /* ↓ mindre tung overlay */
+
+  will-change: transform, opacity;/* ✅ GPU-hint */
+  transform: translateZ(0);       /* ✅ tvingar compositing layer */
+
+  transition:
+    transform 0.28s cubic-bezier(.2,.7,.2,1),
+    opacity   0.28s cubic-bezier(.2,.7,.2,1);
+
+  pointer-events: none;
+}
+
+
+/* steps */
+.qs-steps{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.qs-step{
+  width: 100%;
+  text-align: left;
+  display:flex;
+  align-items:center;
+  gap: 0.75rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 14px;
+  background: rgba(2,6,23,0.35);
+  border: 1px solid rgba(148,163,184,0.16);
+  color: rgba(226,232,240,0.88);
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    filter 0.22s ease;
+  will-change: transform;
+}
+
+.qs-step *{ pointer-events: none; }
+
+.qs-step span{
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display:grid;
+  place-items:center;
+  font-size: 0.85rem;
+  border: 1px solid rgba(148,163,184,0.25);
+  background: rgba(2,6,23,0.35);
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.qs-step.active{
+  background: rgba(99,102,241,0.14);
+  border-color: rgba(99,102,241,0.65);
+  box-shadow: 0 14px 34px rgba(99,102,241,0.22);
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.05);
+}
+
+
+.qs-step.active span{
+  transform: scale(1.06);
+
+  border-color: rgba(139,92,246,0.55);   /* lila kant */
+  background: rgba(139,92,246,0.10);     /* väldigt mjuk lila fyllning */
+  color: #ddd6fe;                        /* ljus lila text */
+
+  box-shadow:
+    0 0 0 4px rgba(139,92,246,0.12),
+    0 6px 16px rgba(139,92,246,0.20);
+    animation: qsPop 240ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+/* Right: sticky card */
+.qs-card{
+  position: sticky;
+  top: 160px; /* justera om du vill ha mer “mitt i” */
+  border-radius: 22px;
+  padding: 2.2rem;
+  background: rgba(2,6,23,0.38);
+  border: 1px solid rgba(148,163,184,0.14);
+  overflow: hidden;
+}
+
+.qs-card::before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(99,102,241,0.22), transparent 45%),
+    radial-gradient(circle at 80% 25%, rgba(34,197,94,0.16), transparent 45%);
+  filter: blur(10px);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.qs-card-kicker{
+  opacity: .8;
+  font-size: .85rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.qs-result{
+  margin-top: 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(2,6,23,0.30);
+  border: 1px solid rgba(148,163,184,0.16);
+}
+
+/* triggers driver scroll-storyn */
+.qs-triggers{
+  position: relative;
+  margin-top: 20vh;     /* startar efter cardet */
+}
+
+.qs-trigger{
+  height: 60vh;        /* <-- EXTREMT VIKTIGT */
+}
+
+
+section{
+  background: transparent;
+}
+
+.card,
+.panel,
+.qs-card{
+  background: rgba(2,6,23,0.55);   /* inte solid */
+  backdrop-filter: blur(6px);      /* glass effect */
+}
+

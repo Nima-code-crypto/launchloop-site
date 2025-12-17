@@ -73,7 +73,7 @@
             Vi bygger din <span>MVP, webb & backend</span> – snabbt, strukturerat & flexibelt.
           </h1>
           <p class="hero-sub">
-            CodeArc är en liten webbstudio som hjälper entreprenörer och bolag att gå från idé till fungerande MVP, webbplats eller system.
+            CodeArc är en webbstudio som hjälper entreprenörer och bolag att gå från idé till fungerande MVP, webbplats eller system.
             Vi kombinerar smart kod, AI-stöd och tydlig kommunikation för att ta dig från “vi borde bygga något” till något du faktiskt kan testa på riktiga användare.
           </p>
 
@@ -175,8 +175,8 @@
             <div class="card-icon">⚡</div>
             <h3>MVP-utveckling</h3>
             <p>
-              Vi tar din idé och kokar ner den till en första version som går
-              att testa på riktiga användare – utan att slösa budget på “nice to have”.
+              MVP (Minimum Viable Product): den minsta versionen av din idé som går att testa på riktiga användare - snabbt och kostnadseffektivt.
+              Vi hjälper dig att koka ner din idé till en första version - utan att slösa budget på “nice to have”.
             </p>
             <ul>
               <li>Scope-workshop: vad är minsta användbara produkt?</li>
@@ -272,66 +272,71 @@
       <p>Fem tydliga steg – med fokus på scope, feedback och leverans.</p>
     </div>
 
-    <div class="process-scroll">
-      <div class="process-steps" id="processSteps">
+   <div class="process-scroll process-qs">
 
-  <!-- progresslinje -->
-  <div class="process-rail">
-    <div class="process-rail-fill" id="processRailFill"></div>
-  </div>
+  <!-- Vänster: sticky timeline -->
+  <aside class="qs-rail" id="qsRail">
+    <div class="qs-rail-line">
+      <div class="qs-rail-fill" id="qsRailFill"></div>
+    </div>
 
-  <button class="step active" data-step="1"><span>1</span> Första samtal & behov</button>
-  <button class="step" data-step="2"><span>2</span> Scope & MVP-definition</button>
-  <button class="step" data-step="3"><span>3</span> Prototyp & feedback</button>
-  <button class="step" data-step="4"><span>4</span> Utveckling & test</button>
-  <button class="step" data-step="5"><span>5</span> Lansering & vidare</button>
+    <div class="qs-steps">
+      <button class="qs-step active" data-step="1"><span>1</span> Första samtal & behov</button>
+      <button class="qs-step" data-step="2"><span>2</span> Scope & MVP-definition</button>
+      <button class="qs-step" data-step="3"><span>3</span> Prototyp & feedback</button>
+      <button class="qs-step" data-step="4"><span>4</span> Utveckling & test</button>
+      <button class="qs-step" data-step="5"><span>5</span> Lansering & vidare</button>
+    </div>
 
-  
+    <div class="qs-glow" id="qsGlow"></div>
+  </aside>
 
-  <!-- glow -->
-  <div class="process-glow" id="processGlow"></div>
-</div>
-
-
-      <div class="process-panels">
-        <article class="panel active" data-step="1">
-          <span class="panel-anchor" aria-hidden="true"></span>
-          <h3>Första samtal & behov</h3>
-          <p>Du berättar om idén, situation och ungefärlig budget. Vi ställer frågor och säger rakt ut vad som är realistiskt.</p>
-          <div class="result">Resultat: gemensam förståelse & grov riktning.</div>
-        </article>
-
-        <article class="panel" data-step="2">
-          <span class="panel-anchor" aria-hidden="true"></span>
-          <h3>Scope & MVP-definition</h3>
-          <p>Vi ringar in vad som måste finnas i version 1 – och vad som kan komma senare. Flöden, roller, “done”-kriterier.</p>
-          <div class="result">Resultat: kort specifikation + uppskattning.</div>
-        </article>
-
-        <article class="panel" data-step="3">
-          <span class="panel-anchor" aria-hidden="true"></span>
-          <h3>Prototyp & feedback</h3>
-          <p>Vi skissar gränssnitt (low/medium fidelity) så du kan klicka igenom innan vi bygger.</p>
-          <div class="result">Resultat: klickbar prototyp / wireframes.</div>
-        </article>
-
-        <article class="panel" data-step="4">
-          <span class="panel-anchor" aria-hidden="true"></span>
-          <h3>Utveckling & test</h3>
-          <p>Vi bygger frontend, backend och integrationer. Du får löpande demos – inga överraskningar.</p>
-          <div class="result">Resultat: första körbara MVP-versionen.</div>
-        </article>
-
-        <article class="panel" data-step="5">
-        <span class="panel-anchor" aria-hidden="true"></span>
-          <h3>Lansering & vidare</h3>
-          <p>Deploy, logging och grundläggande mätetal. Sen itererar vi med riktig användarfeedback.</p>
-          <div class="result">Resultat: produkt ute hos riktiga användare.</div>
-        </article>
+  <!-- Höger: sticky card -->
+  <div class="qs-stage">
+    <div class="qs-card" id="qsCard">
+      <div class="qs-card-kicker" id="qsKicker">Steg 1</div>
+      <h3 id="qsTitle">Första samtal & behov</h3>
+      <p id="qsBody">
+        Du berättar om idén, situation och ungefärlig budget. Vi ställer frågor och säger rakt ut vad som är realistiskt.
+      </p>
+      <div class="qs-result" id="qsResult">
+        Resultat: gemensam förståelse & grov riktning.
       </div>
     </div>
-  </div>
+
+    <!-- Scroll-triggers -->
+    <div class="qs-triggers">
+      <section class="qs-trigger" data-step="1"
+        data-title="Första samtal & behov"
+        data-body="Du berättar om idén, situation och ungefärlig budget. Vi ställer frågor och säger rakt ut vad som är realistiskt."
+        data-result="Resultat: gemensam förståelse & grov riktning."></section>
+
+      <section class="qs-trigger" data-step="2"
+        data-title="Scope & MVP-definition"
+        data-body="Vi ringar in vad som måste finnas i version 1 – och vad som kan komma senare."
+        data-result="Resultat: kort specifikation + uppskattning."></section>
+
+      <section class="qs-trigger" data-step="3"
+        data-title="Prototyp & feedback"
+        data-body="Vi skissar gränssnitt så du kan klicka igenom innan vi bygger."
+        data-result="Resultat: klickbar prototyp / wireframes."></section>
+
+      <section class="qs-trigger" data-step="4"
+        data-title="Utveckling & test"
+        data-body="Vi bygger frontend, backend och integrationer med löpande demos."
+        data-result="Resultat: första körbara MVP-versionen."></section>
+
+      <section class="qs-trigger" data-step="5"
+        data-title="Lansering & vidare"
+        data-body="Deploy, logging och mätetal – sen itererar vi vidare."
+        data-result="Resultat: produkt ute hos riktiga användare."></section>
+    </div>
+     </div> <!-- qs-stage -->
+  </div> <!-- process-scroll -->
+
+</div> <!-- container -->
 </section>
+
 
     <!-- WHY US -->
     <section id="why">
