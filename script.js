@@ -147,6 +147,11 @@ let railTicking = false;
 
 function updateRailContinuous(){
   railTicking = false;
+// ✅ Om vi är ovanför: tvinga steg 1 och avbryt
+  if (forceStep1IfAbove()) return;
+
+  // ✅ Om vi inte ens är inne i process: gör inget
+  if (processState() !== "inside") return;
   if (!qsFill || triggerMids.length < 2) return;
 
   const y = window.scrollY + window.innerHeight * 0.5; // viewport-mitten
@@ -183,9 +188,43 @@ requestAnimationFrame(updateRailContinuous);
 
 let qsActiveIndex = 0; // håller koll på vilket steg som är aktivt
 
+const processSection = document.getElementById("process");
+
+function processState() {
+  if (!processSection) return "outside";
+
+  const r = processSection.getBoundingClientRect();
+  const headerOffset = 140; // typ din sticky header / spacing
+
+  // ovanför sektionen (inte nått steg 1 ännu)
+  if (r.top > headerOffset) return "above";
+
+  // långt under sektionen (har lämnat den)
+  if (r.bottom < headerOffset) return "below";
+
+  return "inside";
+}
+
+function forceStep1IfAbove() {
+  if (processState() === "above") {
+    lastStep = null;          // reset så setQS får köra
+    setQS("1");               // alltid steg 1 när man är ovanför
+    if (qsFill) qsFill.style.transform = "scaleY(0)"; // om du kör continuous fill
+    return true;
+  }
+  return false;
+}
+
+
 
 const qsIO = new IntersectionObserver(() => {
   if (qsLocked) return;
+
+  // ✅ Om vi är ovanför: tvinga steg 1 och avbryt
+  if (forceStep1IfAbove()) return;
+
+  // ✅ Om vi inte ens är inne i process: gör inget
+  if (processState() !== "inside") return;
 
   const viewportMid = window.innerHeight / 2;
 
@@ -255,7 +294,9 @@ qsSteps.forEach(btn => {
 // init
 /*if (qsSteps[0]) setQS(qsSteps[0].dataset.step);*/
 window.addEventListener("load", () => {
-  const first = qsTriggers[0];
-  if (first) setQS(first.dataset.step);
+  lastStep = null;
+  setQS("1");
+  if (qsFill) qsFill.style.transform = "scaleY(0)";
 });
+
 
